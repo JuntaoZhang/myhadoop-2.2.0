@@ -1,0 +1,18 @@
+option java_package = "org.example.hadoop.pd.rpc.protobuf";
+option java_outer_classname = "TestProtos";
+option java_generate_equals_and_hash = true;
+package hadoop.common;
+
+message EmptyRequestProto {
+}
+
+message EmptyResponseProto {
+}
+
+message EchoRequestProto {
+  required string message = 1;
+}
+
+message EchoResponseProto {
+  required string message = 1;
+}
