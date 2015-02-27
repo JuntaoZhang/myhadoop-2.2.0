@@ -1,0 +1,14 @@
+diff --git hadoop-project/pom.xml hadoop-project/pom.xml
+index d3c404e..d54f3fc 100644
+--- hadoop-project/pom.xml
++++ hadoop-project/pom.xml
+@@ -954,6 +954,9 @@
+         <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-javadoc-plugin</artifactId>
++          <configuration>
++            <additionalparam>-Xdoclint:none</additionalparam>
++          </configuration>
+           <version>2.8.1</version>
+         </plugin>
+         <plugin>
