@@ -1,0 +1,26 @@
+#!/bin/bash
+source my.conf
+
+cd ${MYHADOOP_SRC_HOME}
+
+if [ $# -ge 1 ] ; then
+    if [ $1 != "package" ]; then
+        echo "Usage: ./building package"
+        exit 1
+    else
+        echo "mvn package"
+        export MAVEN_OPTS="-Xms256m -Xmx512m"
+        mvn package -Pdist,native -DskipTests -o
+    fi
+
+fi
+
+cd ${MYHADOOP_SRC_TARGET_HOME}
+rm -rf bin/*.cmd
+rm -rf sbin/*.cmd
+
+#root 下需要 -u
+#cp -u ${MYHADOOP_SRC_HOME}/conf/*  ${MYHADOOP_SRC_TARGET_HOME}/etc/hadoop/
+cp ${MYHADOOP_SRC_HOME}/conf/*  ${MYHADOOP_SRC_TARGET_HOME}/etc/hadoop/
+
+
