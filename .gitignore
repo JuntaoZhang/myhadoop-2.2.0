@@ -1,4 +1,5 @@
 *.iml
 .idea/*
 target
-myshell/logs/logs*/*
+myshell/logs/*
+tmp/*
