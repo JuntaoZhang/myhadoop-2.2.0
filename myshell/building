@@ -8,9 +8,9 @@ if [ $# -ge 1 ] ; then
         echo "Usage: ./building package"
         exit 1
     else
-        echo "mvn package"
+        echo "mvn clean package"
         export MAVEN_OPTS="-Xms256m -Xmx512m"
-        mvn package -Pdist,native -DskipTests -o
+        mvn clean package -Pdist,native -DskipTests -o
     fi
 
 fi

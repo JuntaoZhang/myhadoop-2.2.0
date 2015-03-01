@@ -6,4 +6,4 @@ fi
 
 source my.conf
 
-clush -g hadoop -c ${MYHADOOP_SRC_TARGET_HOME}/$1  --dest=~/hadoop/etc/hadoop/$2
+clush -g hadoop -c ${MYHADOOP_SRC_HOME}/$1  --dest=~/hadoop/$2
