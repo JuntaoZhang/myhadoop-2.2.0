@@ -314,6 +314,9 @@ public class FiCaSchedulerApp extends SchedulerApplication {
   synchronized public List<Container> pullNewlyAllocatedContainers() {
     List<Container> returnContainerList = new ArrayList<Container>(
         newlyAllocatedContainers.size());
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(newlyAllocatedContainers);
+    }
     for (RMContainer rmContainer : newlyAllocatedContainers) {
       rmContainer.handle(new RMContainerEvent(rmContainer.getContainerId(),
           RMContainerEventType.ACQUIRED));
