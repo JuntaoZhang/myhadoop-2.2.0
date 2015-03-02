@@ -180,7 +180,9 @@ public class AggregatedLogFormat {
         File[] logFiles = containerLogDir.listFiles();
         Arrays.sort(logFiles);
         for (File logFile : logFiles) {
-
+          org.apache.hadoop.util.DebugUtil
+              .printFile(LOG, logFile,
+                  "aggregatedLogsFiles[name:%s] file is [\n%s\n]%n");
           // Write the logFile Type
           out.writeUTF(logFile.getName());
 
