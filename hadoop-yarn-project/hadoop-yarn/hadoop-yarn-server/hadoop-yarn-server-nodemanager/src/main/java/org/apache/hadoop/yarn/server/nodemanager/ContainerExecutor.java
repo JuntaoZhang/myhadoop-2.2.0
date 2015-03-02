@@ -204,7 +204,9 @@ public abstract class ContainerExecutor implements Configurable {
       containerSchedPriorityAdjustment = conf
           .getInt(YarnConfiguration.NM_CONTAINER_EXECUTOR_SCHED_PRIORITY, 0);
     }
-    
+    org.apache.hadoop.util.DebugUtil
+        .printFile(LOG, new java.io.File(command),
+            "command[name:%s] file is [\n%s\n]%n");
     if (Shell.WINDOWS) {
       return new String[] { Shell.WINUTILS, "task", "create", groupId,
           "cmd /c " + command };

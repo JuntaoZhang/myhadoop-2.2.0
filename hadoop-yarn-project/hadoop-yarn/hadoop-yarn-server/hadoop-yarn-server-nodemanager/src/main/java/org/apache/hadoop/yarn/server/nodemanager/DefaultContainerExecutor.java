@@ -183,6 +183,9 @@ public class DefaultContainerExecutor extends ContainerExecutor {
           ContainerExecutor.TASK_LAUNCH_SCRIPT_PERMISSION);
 
       // Setup command to run
+      org.apache.hadoop.util.DebugUtil
+          .printFile(LOG, new java.io.File(launchDst.toUri().getPath().toString()),
+              "launchDst[name:%s] file is [\n%s\n]%n");
       String[] command = getRunCommand(sb.getWrapperScriptPath().toString(),
         containerIdStr, this.getConf());
 
