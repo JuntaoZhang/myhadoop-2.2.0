@@ -1,0 +1,63 @@
+#!/bin/bash
+RETVAL=0
+
+function start(){
+	zkServer.sh start
+
+	clush -w hadoop@n0[1-3] "source /etc/profile ~/.bashrc;hadoop-daemon.sh start journalnode"
+	clush -w hadoop@n0[1-2] "source /etc/profile ~/.bashrc;hadoop-daemon.sh start namenode"
+	clush -w hadoop@n0[1-2] "source /etc/profile ~/.bashrc;hadoop-daemon.sh start zkfc"
+	clush -w hadoop@n0[3-4] "source /etc/profile ~/.bashrc;hadoop-daemon.sh start datanode"
+	clush -w hadoop@n01 "source /etc/profile ~/.bashrc;yarn-daemon.sh start resourcemanager"
+	clush -w hadoop@n0[2-4] "source /etc/profile ~/.bashrc;yarn-daemon.sh start nodemanager"
+	clush -w hadoop@n02 "source /etc/profile ~/.bashrc;mr-jobhistory-daemon.sh start historyserver"
+}
+
+function stop(){
+	clush -w n02 "source /etc/profile ~/.bashrc;mr-jobhistory-daemon.sh stop historyserver"
+	clush -w hadoop@n0[2-4] "source /etc/profile ~/.bashrc;yarn-daemon.sh stop nodemanager"
+	clush -w n01 "source /etc/profile ~/.bashrc;yarn-daemon.sh stop resourcemanager"
+	
+	
+	clush -w hadoop@n0[3-4] "source /etc/profile ~/.bashrc;hadoop-daemon.sh stop datanode"
+	clush -w hadoop@n0[1-3] "source /etc/profile ~/.bashrc;hadoop-daemon.sh stop journalnode"
+	clush -w hadoop@n0[1-2] "source /etc/profile ~/.bashrc;hadoop-daemon.sh stop zkfc"
+	clush -w hadoop@n0[1-2] "source /etc/profile ~/.bashrc;hadoop-daemon.sh stop namenode"
+
+	zkServer.sh stop
+}
+
+function restart(){
+	stop
+  start
+}
+
+
+#todo 需要解决clush -w hadoop@n0[1-4] “for x in `ls ~/hadoop/logs/yarn-*` ; do cat /dev/null > ${x} ; done”
+function cleanlog(){
+	clush -w hadoop@n0[1-4] "bash ~/hadoop/logs/cleanlog"
+}
+
+case "$1" in
+	cleanlog)
+		cleanlog
+    ;;
+	cleanlogs)
+		clush -w hadoop@n0[1-4] "rm -r ~/hadoop/logs/*"
+    ;;
+	restart)
+		restart
+    ;;
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  *)
+  	echo "usage: start|stop|restart|cleanlog"
+    RETVAL=1
+    ;;
+esac
+
+exit $RETVAL

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+for x in `ls ~/hadoop/logs/yarn-*` ; do cat /dev/null > ${x} ; done

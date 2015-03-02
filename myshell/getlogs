@@ -8,7 +8,8 @@ echo "log name: ${LOG_DIR_NAME}"
 mkdir "${LOG_DIR_NAME}"
 cd "${LOG_DIR_NAME}"
 
-scp hadoop@n01:~/hadoop/logs/yarn-hadoop-resourcemanager-n01.log ./
-scp hadoop@n02:~/hadoop/logs/yarn-hadoop-nodemanager-n02.log ./
-scp hadoop@n03:~/hadoop/logs/yarn-hadoop-nodemanager-n03.log ./
-scp hadoop@n04:~/hadoop/logs/yarn-hadoop-nodemanager-n04.log ./
+scp hadoop@n01:~/hadoop/logs/yarn*.log ./
+scp hadoop@n02:~/hadoop/logs/yarn*.log ./
+scp hadoop@n03:~/hadoop/logs/yarn*.log ./
+scp hadoop@n04:~/hadoop/logs/yarn*.log ./
+
