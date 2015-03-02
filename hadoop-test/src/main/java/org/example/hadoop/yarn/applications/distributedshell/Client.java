@@ -484,6 +484,11 @@ public class Client {
     vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
     // Set Xmx based on am memory size
     vargs.add("-Xmx" + amMemory + "m");
+
+    vargs.add("-Dhadoop.root.logger=${YARN_ROOT_LOGGER:-INFO,RFA}");
+    vargs.add("-Dhadoop.log.dir=${HADOOP_HOME}/logs/");
+    vargs.add("-Dhadoop.log.file=yarn-AM-" + appName + ".log");
+
     // Set class name
     vargs.add(appMasterMainClass);
     // Set params for Application Master
