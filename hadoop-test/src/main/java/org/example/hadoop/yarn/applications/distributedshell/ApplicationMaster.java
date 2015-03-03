@@ -35,6 +35,7 @@ import org.apache.hadoop.yarn.api.ApplicationConstants.Environment;
 import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterResponse;
 import org.apache.hadoop.yarn.api.records.*;
 import org.apache.hadoop.yarn.client.api.AMRMClient.ContainerRequest;
+import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.client.api.async.AMRMClientAsync;
 import org.apache.hadoop.yarn.client.api.async.NMClientAsync;
 import org.apache.hadoop.yarn.client.api.async.impl.NMClientAsyncImpl;
@@ -192,6 +193,9 @@ public class ApplicationMaster {
   // Launch threads
   private List<Thread> launchThreads = new ArrayList<Thread>();
 
+  // 所有节点
+  private List<String> nodeList = new ArrayList();
+
   /**
    * @param args Command line args
    */
@@ -243,6 +247,7 @@ public class ApplicationMaster {
       String line = "";
       while ((line = buf.readLine()) != null) {
         LOG.info("System CWD content: " + line);
+        //1>> AppMaster.stdout
         System.out.println("System CWD content: " + line);
       }
       buf.close();
@@ -472,6 +477,8 @@ public class ApplicationMaster {
       containerMemory = maxMem;
     }
 
+    initYarnNodes();
+
     // Setup ask for containers from RM
     // Send request for containers to RM
     // Until we get our fully allocated quota, we keep on polling RM for
@@ -493,6 +500,22 @@ public class ApplicationMaster {
     finish();
 
     return success;
+  }
+
+  private void initYarnNodes() throws IOException {
+    try {
+      YarnClient yarnClient = YarnClient.createYarnClient();
+      yarnClient.init(conf);
+      yarnClient.start();
+      List<NodeReport> clusterNodeReports;
+      clusterNodeReports = yarnClient.getNodeReports(
+          NodeState.RUNNING);
+      for (NodeReport node : clusterNodeReports) {
+        this.nodeList.add(node.getNodeId().getHost());
+      }
+    } catch (YarnException e) {
+      LOG.error(e.getMessage(),e);
+    }
   }
 
   @VisibleForTesting
@@ -847,9 +870,25 @@ public class ApplicationMaster {
     Resource capability = Records.newRecord(Resource.class);
     capability.setMemory(containerMemory);
 
-    ContainerRequest request = new ContainerRequest(capability, null, null,
-        pri);
-    LOG.info("Requested container ask: " + request.toString());
+    String[] nodes = getANode();
+
+    if(LOG.isDebugEnabled()){
+      LOG.debug("setupContainerAskForRM node is : "+Arrays.toString(nodes));
+    }
+
+    ContainerRequest request = new ContainerRequest(capability, nodes, null,
+        pri,false);
+    LOG.info("Requested container ask: " + request.toString() + "RelaxLocality[" + request.getRelaxLocality() + "]");
     return request;
+  }
+
+  private String[] getANode() {
+    String[] nodes = null;
+    if (!nodeList.isEmpty()) {
+      nodes = new String[1];
+      nodes[0] = nodeList.get(0);
+      nodeList.remove(0);
+    }
+    return nodes;
   }
 }
