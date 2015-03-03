@@ -2,7 +2,7 @@
 RETVAL=0
 
 function start(){
-	zkServer.sh start
+	clush -w hadoop@n01 "source /etc/profile ~/.bashrc;zkServer.sh start"
 
 	clush -w hadoop@n0[1-3] "source /etc/profile ~/.bashrc;hadoop-daemon.sh start journalnode"
 	clush -w hadoop@n0[1-2] "source /etc/profile ~/.bashrc;hadoop-daemon.sh start namenode"
@@ -24,29 +24,29 @@ function stop(){
 	clush -w hadoop@n0[1-2] "source /etc/profile ~/.bashrc;hadoop-daemon.sh stop zkfc"
 	clush -w hadoop@n0[1-2] "source /etc/profile ~/.bashrc;hadoop-daemon.sh stop namenode"
 
-	zkServer.sh stop
+    clush -w hadoop@n01 "source /etc/profile ~/.bashrc;zkServer.sh stop"
 }
 
 function restart(){
-	stop
-  start
+    stop
+    start
 }
 
 
 #todo 需要解决clush -w hadoop@n0[1-4] “for x in `ls ~/hadoop/logs/yarn-*` ; do cat /dev/null > ${x} ; done”
-function cleanlog(){
-	clush -w hadoop@n0[1-4] "bash ~/hadoop/logs/cleanlog"
+function resetlog(){
+	clush -w hadoop@n0[1-4] "bash ~/hadoop/bin/cleanlog"
 }
 
 case "$1" in
-	cleanlog)
-		cleanlog
+	resetlog)
+    resetlog
     ;;
 	cleanlogs)
 		clush -w hadoop@n0[1-4] "rm -r ~/hadoop/logs/*"
     ;;
 	restart)
-		restart
+    restart
     ;;
   start)
     start
@@ -55,9 +55,9 @@ case "$1" in
     stop
     ;;
   *)
-  	echo "usage: start|stop|restart|cleanlog"
+  	echo "usage: start|stop|restart|cleanlogs|resetlog"
     RETVAL=1
     ;;
 esac
 
-exit $RETVAL
+exit ${RETVAL}

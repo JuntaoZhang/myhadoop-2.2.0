@@ -1,4 +1,6 @@
 #!/bin/bash
 
 
-for x in `ls ~/hadoop/logs/yarn-*` ; do cat /dev/null > ${x} ; done
+for x in `ls ~/hadoop/logs/yarn-hadoop*` ; do cat /dev/null > ${x} ; done
+rm -f ~/hadoop/logs/yarn-AM-*
+rm -f ~/hadoop/logs/yarn-distributedshell-*
