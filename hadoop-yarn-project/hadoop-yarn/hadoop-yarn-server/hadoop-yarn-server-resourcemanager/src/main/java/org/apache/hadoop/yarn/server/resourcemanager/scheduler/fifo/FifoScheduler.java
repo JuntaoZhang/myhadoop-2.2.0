@@ -395,7 +395,7 @@ public class FifoScheduler implements ResourceScheduler, Configurable {
    */
   private void assignContainers(FiCaSchedulerNode node) {
     LOG.debug("assignContainers:" +
-        " node=" + node.getRMNode().getNodeAddress() + 
+        " node=" + node.getRMNode().getNodeAddress() + " numContainers=" + node.getNumContainers() +
         " #applications=" + applications.size());
 
     // Try to assign containers to applications in fifo order
