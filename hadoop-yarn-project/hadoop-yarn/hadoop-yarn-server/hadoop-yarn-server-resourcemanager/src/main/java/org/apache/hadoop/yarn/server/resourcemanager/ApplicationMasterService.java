@@ -334,6 +334,9 @@ public class ApplicationMasterService extends AbstractService implements
   @Override
   public AllocateResponse allocate(AllocateRequest request)
       throws YarnException, IOException {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("AllocateRequest:" + request);
+    }
 
     ApplicationAttemptId appAttemptId = authorizeRequest();
 

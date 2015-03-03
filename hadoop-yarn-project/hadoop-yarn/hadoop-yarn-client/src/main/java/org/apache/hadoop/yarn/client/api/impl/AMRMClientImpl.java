@@ -243,6 +243,9 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
         blacklistRemovals.clear();
       }
 
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("AllocateRequest:" + allocateRequest);
+      }
       allocateResponse = rmClient.allocate(allocateRequest);
 
       synchronized (this) {
